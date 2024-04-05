@@ -89,7 +89,7 @@ Use this method of installing EPEL from the Fedora project rather than the one i
 noglob sudo dnf install -y aria2 htop nano neofetch screen npm
 
 # If this machine is a workstation:
-noglob sudo dnf install -y chromium gedit-plugin-textsize gimp gnome-extensions-app gnome-tweaks libreoffice overpass-fonts R
+noglob sudo dnf install -y chromium gedit-plugin-textsize gimp gnome-extensions-app gnome-tweaks libreoffice nextcloud-client-nautilus overpass-fonts R
 ```
 
 ## Setup Cockpit
