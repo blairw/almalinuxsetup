@@ -305,3 +305,10 @@ blair@fedoraworkstation ~
 ❯ sudo -u gdm dbus-launch gsettings get org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type
 'nothing'
 ```
+
+## Ongoing Maintenance
+
+### Checking NTP
+
+See https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/configuring_basic_system_settings/configuring-time-synchronization_configuring-basic-system-settings#using-chrony_configuring-time-synchronization
+
