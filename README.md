@@ -75,6 +75,7 @@ sudo dnf install ffmpeg obs-studio --allowerasing
 
 # Then do the rest
 sudo dnf install audacity vlc
+sudo dnf install geany geany-plugins-addons geany-plugins-autoclose geany-plugins-automark geany-plugins-codenav geany-plugins-git-changebar geany-plugins-geanyprj geany-plugins-lineoperations geany-plugins-markdown geany-plugins-overview geany-plugins-projectorganizer geany-plugins-treebrowser geany-plugins-workbench
 ```
 
 Adapted from https://rpmfusion.org/Configuration/
@@ -304,8 +305,3 @@ blair@fedoraworkstation ~
 ❯ sudo -u gdm dbus-launch gsettings get org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type
 'nothing'
 ```
-
-## TODO: Get these working
-
-geany geany-themes
-
