@@ -29,8 +29,11 @@ In the GNOME settings app:
 - Power
     - Automatic Screen Brightness: turn OFF (default: on)
     - Dim Screen: turn OFF (default: on)
+    - Screen black: set to NEVER if this is an always-on machine
+    - Automatic suspend: set to OFF if this is an always-on machine
 - Removeable Media
     - Turn everything off, we don't want this autoplay nonsense!
+- Apply Network profiles if needed (e.g., static IP addresses)
 
 ## Switch to zsh
 
@@ -48,7 +51,7 @@ Then logout and log back in, then setup oh-my-zsh:
 sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 ```
 
-## Setup dnf
+## Setup dnf with RPMFusion and EPEL
 
 **Caution:** If intending to use Virtualbox, you may need to follow the `--exclude=kernel*` instructions based on [fedorasetup](https://github.com/blairw/fedorasetup), rather than the update-all approach documneted here.
 
@@ -63,7 +66,6 @@ Next, run the tasks - note that `noglob` is required for zsh as per https://gith
 noglob sudo dnf update -y
 
 # Get RPMFusion and EPEL together
-sudo dnf install -y yum-utils
 sudo dnf install --nogpgcheck https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(rpm -E %rhel).noarch.rpm
 sudo dnf install --nogpgcheck https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-$(rpm -E %rhel).noarch.rpm https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-$(rpm -E %rhel).noarch.rpm
 
@@ -71,7 +73,7 @@ sudo dnf install --nogpgcheck https://mirrors.rpmfusion.org/free/el/rpmfusion-fr
 sudo dnf makecache --refresh
 
 # Then do this one, which forces a bit of a cleanup
-sudo dnf install ffmpeg obs-studio --allowerasing
+sudo dnf install ffmpeg obs-studio
 
 # Then do the rest
 sudo dnf install audacity vlc
@@ -82,6 +84,16 @@ Adapted from https://rpmfusion.org/Configuration/
 
 Use this method of installing EPEL from the Fedora project rather than the one in AlmaLinux, this will give us a newer version.
 
+## Setup dnf with CRB
+
+CRB is needed for the R programming language and probably some other useful stuff too...
+
+```zsh
+sudo dnf config-manager --set-enabled crb
+sudo dnf makecache --refresh
+sudo dnf install R
+```
+
 ## Install useful packages
 
 ```zsh
@@ -89,7 +101,7 @@ Use this method of installing EPEL from the Fedora project rather than the one i
 noglob sudo dnf install -y aria2 htop nano neofetch screen npm
 
 # If this machine is a workstation:
-noglob sudo dnf install -y chromium gedit-plugin-textsize gimp gnome-extensions-app gnome-tweaks libreoffice nextcloud-client-nautilus overpass-fonts R
+noglob sudo dnf install -y chromium gedit-plugin-textsize gimp gnome-extensions-app gnome-tweaks libreoffice nextcloud-client-nautilus overpass-fonts
 ```
 
 ## Setup Cockpit
