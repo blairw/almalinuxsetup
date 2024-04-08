@@ -84,6 +84,8 @@ Adapted from https://rpmfusion.org/Configuration/
 
 Use this method of installing EPEL from the Fedora project rather than the one in AlmaLinux, this will give us a newer version.
 
+NOTE: If you're told that the update(s) about have installed a new kernel, reboot now.
+
 ## Setup dnf with CRB
 
 CRB is needed for the R programming language and probably some other useful stuff too...
@@ -114,6 +116,13 @@ sudo firewall-cmd --add-service=cockpit --permanent
 ```
 
 Adapted from https://cockpit-project.org/running
+
+Once set up, go to Cockpit:
+
+- Overview &rarr; View metrics and history &rarr; **Install cockpit-pcp**
+- Then logout, log back in
+- Overview &rarr; View metrics and history &rarr; **Metrics settings** and enable **Collect metrics** but maybe not Export to network (!).
+- Applications &rarr; Machines &rarr; Install
 
 ## Setup Dropbox
 
@@ -157,6 +166,121 @@ sudo firewall-cmd --reload
 ```
 
 I use this version because it works across server and workstation environments, across desktop environments, with no dependency on package managers and so on.
+
+
+## Samba (SMB) - server-side configuration (if this machine will host shares)
+
+First, install the necessary packages:
+
+```zsh
+sudo dnf install samba samba-common samba-client
+```
+
+Next, setup your folder:
+
+```zsh
+mkdir /home/blair/mynetworkdrive
+```
+
+Then, configure the conf file (`/etc/samba/smb.conf`):
+
+```markdown
+[global]
+...
+
+# Force encryption as per https://serverfault.com/a/1088412
+server signing = mandatory
+server min protocol = SMB3
+server smb encrypt = required
+
+...
+
+[mynetworkdrive]
+path = /home/blair/mynetworkdrive
+writeable = Yes
+browseable = Yes
+public = no
+valid users = blair
+create mask = 0644
+directory mask = 0755
+write list = user
+```
+
+Remove the _force encryption_ part if you're setting up a server for clients that cannot support SMB encryption for some very special reasons.
+
+Next, go to Cockpit &rarr; Networking &rarr; Firewall &rarr; Add services (to the correct zone!) &rarr; Filter services to **samba**. Enable **samba** ("TCP: 139, 445; UDP: 138").
+
+Finally:
+
+```zsh
+
+# Setup account
+sudo smbpasswd -a blair
+
+# Set correct folder permissions
+sudo semanage fcontext -a -t public_content_t "/home/blair/mynetworkdrive(/.*)?"
+
+# Activate correct folder permissions
+sudo restorecon -R /home/blair/mynetworkdrive
+chcon -t samba_share_t /home/blair/mynetworkdrive
+
+sudo setsebool -P samba_domain_controller on
+sudo setsebool -P samba_enable_home_dirs on
+```
+
+Note: systemctl commands...
+
+```zsh
+sudo systemctl enable smb
+sudo systemctl restart smb
+sudo systemctl status smb
+```
+
+... See also https://docs.fedoraproject.org/en-US/quick-docs/samba/
+
+
+## Samba (SMB) - client-side configuration (if this machine will connect to shares)
+
+First, `mkdir /media/myshare1`, then:
+
+Add to `/etc/fstab`:
+
+```
+//myserver/myshare1 /media/myshare1 cifs credentials=/home/myusername/myshare-credentials.txt,noauto,user 0 0
+```
+
+(I found that I had to specify `/home/myusername/` instead of `~/`)
+
+Credentials file formatted like so:
+
+```
+username=blair
+password=mypasswordgoeshere
+```
+
+Then as per https://superuser.com/questions/1444883/user-cifs-mounts-not-supported-fedora-30, we need to set the suid bit:
+
+```zsh
+sudo chmod u+s /bin/mount
+sudo chmod u+s /bin/umount
+sudo chmod u+s /usr/sbin/mount.cifs
+```
+
+Then need to refresh systemd to use the updated fstab:
+
+```zsh
+sudo systemctl daemon-reload
+```
+
+Then can mount like:
+
+```zsh
+mount //myserver/myshare1
+```
+
+To check the properties of the Samba share, run `mount -t cifs`.
+
+
 
 
 ## Git / GitHub credentials saver
@@ -254,48 +378,6 @@ Adapted from https://ostechnix.com/how-to-use-pbcopy-and-pbpaste-commands-on-lin
 
 - https://extensions.gnome.org/extension/307/dash-to-dock/
 - You may also consider installing some from https://www.debugpoint.com/gnome-40-extensions/
-
-
-## Connect to a Samba (SMB) network share
-
-First, `mkdir /media/myshare1`, then:
-
-Add to `/etc/fstab`:
-
-```
-//myserver/myshare1 /media/myshare1 cifs credentials=/home/myusername/myshare-credentials.txt,noauto,user 0 0
-```
-
-(I found that I had to specify `/home/myusername/` instead of `~/`)
-
-Credentials file formatted like so:
-
-```
-username=blair
-password=mypasswordgoeshere
-```
-
-Then as per https://superuser.com/questions/1444883/user-cifs-mounts-not-supported-fedora-30, we need to set the suid bit:
-
-```zsh
-sudo chmod u+s /bin/mount
-sudo chmod u+s /bin/umount
-sudo chmod u+s /usr/sbin/mount.cifs
-```
-
-Then need to refresh systemd to use the updated fstab:
-
-```zsh
-sudo systemctl daemon-reload
-```
-
-Then can mount like:
-
-```zsh
-mount //myserver/myshare1
-```
-
-To check the properties of the Samba share, run `mount -t cifs`.
 
 
 
