@@ -51,6 +51,24 @@ Then logout and log back in, then setup oh-my-zsh:
 sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 ```
 
+## Pure
+
+As per https://github.com/sindresorhus/pure
+
+```zsh
+mkdir -p "$HOME/.zsh"
+git clone https://github.com/sindresorhus/pure.git "$HOME/.zsh/pure"
+```
+
+Then edit `~/.zshrc` to include as follows:
+
+```
+# https://github.com/sindresorhus/pure
+fpath+=($HOME/.zsh/pure)
+autoload -U promptinit; promptinit
+prompt pure
+```
+
 ## Setup dnf with RPMFusion and EPEL
 
 **Caution:** If intending to use Virtualbox, you may need to follow the `--exclude=kernel*` instructions based on [fedorasetup](https://github.com/blairw/fedorasetup), rather than the update-all approach documneted here.
