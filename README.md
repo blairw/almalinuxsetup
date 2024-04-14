@@ -418,6 +418,21 @@ blair@fedoraworkstation ~
 'nothing'
 ```
 
+
+## GNOME Terminal change padding
+
+1. `nano ~/.config/gtk-3.0/gtk.css`
+2. Copypaste the following:
+
+```
+vte-terminal {
+  padding: 10px;
+}
+```
+
+Adapted from https://askubuntu.com/questions/1443328/gnome-terminal-padding-only-when-fullscreen
+
+
 ## Ongoing Maintenance
 
 ### Checking NTP
