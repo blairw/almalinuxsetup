@@ -424,3 +424,23 @@ blair@fedoraworkstation ~
 
 See https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/configuring_basic_system_settings/configuring-time-synchronization_configuring-basic-system-settings#using-chrony_configuring-time-synchronization
 
+### Using ddcutil for the equivalent of Mac's MonitorControl (set screen brightness)
+
+_Adapted from https://www.reddit.com/r/raspberry_pi/comments/10o2nzt/comment/j6c9q4h/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button_
+
+You might be prompted to install `ddcutil`.
+
+To get the current brightness setting:
+
+```zsh
+sudo ddcutil getvcp 0x10
+```
+
+To set the brightness to, for example, 81%:
+
+```zsh
+sudo ddcutil setvcp 0x10 81
+```
+
+Be careful with DDC, not every monitor supports it, though most modern monitors do.
+
