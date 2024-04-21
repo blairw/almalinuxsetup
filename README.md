@@ -118,7 +118,7 @@ sudo dnf install R
 
 ```zsh
 # Common install for workstation + server:
-noglob sudo dnf install -y aria2 htop nano neofetch screen npm
+noglob sudo dnf install -y aria2 git-lfs htop nano neofetch screen npm
 
 # If this machine is a workstation:
 noglob sudo dnf install -y chromium gedit-plugin-textsize gimp gnome-extensions-app gnome-tweaks libreoffice nextcloud-client-nautilus overpass-fonts
